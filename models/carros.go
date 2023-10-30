@@ -9,7 +9,7 @@ import (
 	"fyne.io/fyne/v2/storage"
 )
 const (
-    autoSize = 70
+    autoSize = 100
     gameWidth    = 300
 )
 
@@ -24,28 +24,24 @@ var imags = []string{
     "./assets/carro_verde.png",
 }
 
-type auto struct {
-    rectangle *canvas.Image
-    position  fyne.Position
+type Vehicle struct {
+    ID        int
+    Image     *canvas.Image
+    Position fyne.Position
 }
 
-func Newauto() *auto {
+
+func NewVehicle(id int ) *Vehicle {
     rand.Seed(time.Now().UnixNano())
-    imagePath := imags[rand.Intn(len(imags))]
+    //imagePath := imags[rand.Intn(len(imags))]
 
-    auto := &auto{
-        rectangle: canvas.NewImageFromURI(storage.NewFileURI(imagePath)),
+    Vehicle := &Vehicle{
+        ID: id,
+        Image: canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_verde.png")),
+       
+        Position: fyne.NewPos(100, 100), 
+       
     }
-    auto.rectangle.Resize(fyne.NewSize(autoSize, autoSize))
-    
-    return auto
-}
-
-func (o *auto) MoveTo(x, y float32) {
-    o.position = fyne.NewPos(x, y)
-    o.rectangle.Move(o.position)
-}
-
-func (o *auto) GetRectangle() *canvas.Image {
-    return o.rectangle
+    Vehicle.Image.Resize(fyne.NewSize(600,300))
+    return Vehicle
 }
