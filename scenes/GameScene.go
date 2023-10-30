@@ -43,63 +43,69 @@ func NewGameScene(fyneWindow fyne.Window) *GameScene {
 	return sceneGame
 }
 
+// En tu función RenderGame en GameScene
 
-func (s*GameScene) RenderGame() {
-	background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background.png"))
-	background.Resize(fyne.NewSize(701,500))
-	background.Move(fyne.NewPos(-5,0))
+func (s *GameScene) RenderGame() {
+    background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background.png"))
+    background.Resize(fyne.NewSize(701, 500))
+    background.Move(fyne.NewPos(-5, 0))
 
-	btnBackMenu:= widget.NewButton("Salir", s.BackMenu)
-	btnBackMenu.Resize(fyne.NewSize(130,30))
-	btnBackMenu.Move(fyne.NewPos(470,50))
-	
-	
-	vehicleLayer := container.NewWithoutLayout()
+    btnBackMenu := widget.NewButton("Salir", s.BackMenu)
+    btnBackMenu.Resize(fyne.NewSize(130, 30))
+    btnBackMenu.Move(fyne.NewPos(470, 50))
 
-	for _, vehicle := range vehicles {
-		if vehicleLayer.Visible() {
-			vehicleLayer.Add(vehicle.Image)
-		}
-		
-		
-	}
-	
-	
+    // Contenedor para los vehículos
+    vehicleContainer := container.NewWithoutLayout()
 
-	go func() {
+    s.window.SetContent(container.NewWithoutLayout(background, btnBackMenu, vehicleContainer))
+
+    go func() {
         <-startVehicleCreation // Espera la señal para iniciar la creación de vehículos
         for i := 0; i < numVehiculos; i++ {
             wg.Add(1)
             vehicle := models.NewVehicle(i)
+    
+            // Calcula la posición inicial en función del índice
+            x := 100 + float32(i*120) // Ajusta el espaciado entre vehículos
+            y := 350 // Ajusta la altura en la que aparecen los vehículos
+    
+            vehicle.Position = fyne.NewPos(x, float32(y))
             vehicles = append(vehicles, vehicle)
             go vehicleLlega(vehicle)
+    
+            // Agregar la imagen del vehículo al contenedor y establecer su posición
+            vehicleContainer.Add(vehicle.Image)
+            canvas.Refresh(vehicleContainer) // Asegura que el contenedor se actualice
         }
     }()
-
-	s.window.SetContent(container.NewWithoutLayout(background, btnBackMenu, vehicleLayer))
+    
 }
+
 func (s *GameScene) BackMenu() {
 	NewMenuScene(s.window)
 	
 }
 func vehicleLlega(vehicle *models.Vehicle) {
     fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
+    
 
     entrada <- struct{}{}
 
     espaciosEstacionamiento <- struct{}{}
     fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
 
-    // Verifica si el vehículo ya está estacionado en la posición inicial (100, 100)
-    if vehicle.Position != fyne.NewPos(100, 100) {
+    // Verifica si el slice tiene al menos dos elementos
+    if len(vehicles) >= 2 {
         // Encuentra una nueva posición de estacionamiento
-        for i := 0; i < capacidad; i++ {
+        for i := 0; i < len(vehicles)-1; i++ {
             if vehicles[i].Position == fyne.NewPos(100, 100) {
                 vehicles[i].Position = fyne.NewPos(100+float32(i*120), 250)
                 break
             }
         }
     }
+
+    
 
     <-entrada
 

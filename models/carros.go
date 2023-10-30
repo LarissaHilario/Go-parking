@@ -33,15 +33,14 @@ type Vehicle struct {
 
 func NewVehicle(id int ) *Vehicle {
     rand.Seed(time.Now().UnixNano())
-    //imagePath := imags[rand.Intn(len(imags))]
+    imagePath := imags[rand.Intn(len(imags))]
 
     Vehicle := &Vehicle{
         ID: id,
-        Image: canvas.NewImageFromURI(storage.NewFileURI("./assets/auto_verde.png")),
-       
-        Position: fyne.NewPos(100, 100), 
+        Image: canvas.NewImageFromURI(storage.NewFileURI(imagePath)),
+        Position: fyne.NewPos(100,100), 
        
     }
-    Vehicle.Image.Resize(fyne.NewSize(600,300))
+    Vehicle.Image.Resize(fyne.NewSize(100,100))
     return Vehicle
 }
