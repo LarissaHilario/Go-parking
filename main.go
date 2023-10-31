@@ -11,7 +11,7 @@ func main() {
     myWindow := myApp.NewWindow("Estacionamiento")
 
     myWindow.SetFixedSize(true)
-    myWindow.Resize(fyne.NewSize(700, 500))
+    myWindow.Resize(fyne.NewSize(1050, 750))
 	myWindow.CenterOnScreen()
 
 	scenes.NewMenuScene(myWindow)

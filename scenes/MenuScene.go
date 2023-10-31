@@ -23,7 +23,7 @@ func NewMenuScene(fyneWindow fyne.Window) *MenuScene {
 
 func (s*MenuScene) RenderMenu() {
 	background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background2.png"))
-	background.Resize(fyne.NewSize(740,540))
+	background.Resize(fyne.NewSize(1050,750))
 	background.Move(fyne.NewPos(-25,0))
 
 	btnStartGame := widget.NewButton("Iniciar", s.StartGame)
@@ -36,4 +36,5 @@ func (s*MenuScene) RenderMenu() {
 func (s *MenuScene) StartGame() {
 	NewGameScene(s.window)
 	StartVehicleCreation()
+	
 }

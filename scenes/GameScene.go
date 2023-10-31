@@ -1,3 +1,4 @@
+
 package scenes
 
 import (
@@ -17,9 +18,10 @@ import (
 type GameScene struct {
 	window fyne.Window
 }
+
 const (
-	capacidad    = 3
-	numVehiculos = 10
+	capacidad    = 20
+	numVehiculos = 100
 )
 
 var (
@@ -47,7 +49,7 @@ func NewGameScene(fyneWindow fyne.Window) *GameScene {
 
 func (s *GameScene) RenderGame() {
     background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background.png"))
-    background.Resize(fyne.NewSize(701, 500))
+    background.Resize(fyne.NewSize(1050, 750))
     background.Move(fyne.NewPos(-5, 0))
 
     btnBackMenu := widget.NewButton("Salir", s.BackMenu)
@@ -64,11 +66,11 @@ func (s *GameScene) RenderGame() {
         for i := 0; i < numVehiculos; i++ {
             wg.Add(1)
             vehicle := models.NewVehicle(i)
-    
+
             // Calcula la posición inicial en función del índice
-            x := 100 + float32(i*120) // Ajusta el espaciado entre vehículos
+            x := 100 + float32(i*60) // Ajusta el espaciado entre vehículos
             y := 350 // Ajusta la altura en la que aparecen los vehículos
-    
+           
             vehicle.Position = fyne.NewPos(x, float32(y))
             vehicles = append(vehicles, vehicle)
             go vehicleLlega(vehicle)
@@ -76,6 +78,7 @@ func (s *GameScene) RenderGame() {
             // Agregar la imagen del vehículo al contenedor y establecer su posición
             vehicleContainer.Add(vehicle.Image)
             canvas.Refresh(vehicleContainer) // Asegura que el contenedor se actualice
+             
         }
     }()
     
@@ -99,25 +102,26 @@ func vehicleLlega(vehicle *models.Vehicle) {
         // Encuentra una nueva posición de estacionamiento
         for i := 0; i < len(vehicles)-1; i++ {
             if vehicles[i].Position == fyne.NewPos(100, 100) {
-                vehicles[i].Position = fyne.NewPos(100+float32(i*120), 250)
+                vehicles[i].Position = fyne.NewPos(float32(i*120), 150)
+                vehicle.Image.Move(vehicles[i].Position)
                 break
             }
         }
     }
 
     
-
+    vehicle.Image.Move(vehicle.Position)
     <-entrada
 
     fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
 
-    time.Sleep(time.Duration(1+rand.Intn(5)) * time.Second)
+    time.Sleep(time.Duration(1+rand.Intn(20)) * time.Second)
 
     <-espaciosEstacionamiento
     fmt.Printf("El vehículo %d está saliendo del estacionamiento.\n", vehicle.ID)
 
     // Libera la posición
-    vehicle.Position = fyne.NewPos(100, 100) // Regresa a la posición inicial
-
+    vehicle.Position = fyne.NewPos(100, 400) // Regresa a la posición inicial
+    vehicle.Image.Move(vehicle.Position)
     wg.Done()
 }
