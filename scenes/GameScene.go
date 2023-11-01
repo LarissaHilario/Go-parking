@@ -31,26 +31,30 @@ var (
 	vehicles                 = make([]*models.Vehicle, 0)
 	startVehicleCreation = make(chan bool) 
     coordenadasEstacionamiento = []fyne.Position{
-        {X: 420, Y: 515},
-        {X: 656, Y: 515},
-        {X: 780, Y: 515},
-        {X: 900, Y: 515},
-        {X: 1021, Y: 515},
-        {X: 1140, Y: 515},
-        {X: 1260, Y: 515},
-        {X: 1380, Y: 515},
-        {X: 1500, Y: 515},
-        {X: 1615, Y: 515},
-        {X: 420, Y: 802},
-        {X: 656, Y: 802},
-        {X: 780, Y: 802},
-        {X: 900, Y: 802},
-        {X: 1021, Y: 802},
-        {X: 1140, Y: 802},
-        {X: 1260, Y: 802},
-        {X: 1380, Y: 802},
-        {X: 1500, Y: 802},
-        {X: 1615, Y: 802},
+        {X: 890, Y: 350},
+        {X: 985, Y: 350},
+        {X: 1086, Y: 350},
+        {X: 1190, Y: 350},
+        {X: 1300, Y: 350},
+        {X: 1390, Y: 350},
+        {X: 1500, Y: 350},
+        {X: 1590, Y: 350},
+        {X: 1680, Y: 350},
+        {X: 1780, Y: 350},
+
+        {X: 890, Y: 650},
+        {X: 1031, Y: 650},
+        {X: 1127, Y: 650},
+        {X: 1221, Y: 650},
+        {X: 1310, Y: 650},
+        {X: 1402, Y: 650},
+        {X: 1510, Y: 650},
+        {X: 1600, Y: 650},
+        {X: 1692, Y: 650},
+        {X: 1790, Y: 650},
+
+
+       
     }   
 )
 
@@ -131,7 +135,7 @@ func vehicleLlega(vehicle *models.Vehicle) {
     }
 
     
-    vehicle.Image.Move(vehicle.Position)
+    
     <-entrada
 
     fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
