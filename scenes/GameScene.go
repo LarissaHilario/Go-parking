@@ -113,11 +113,11 @@ func (s *GameScene) BackMenu() {
 }
 
 func vehicleLlega(vehicle *models.Vehicle) {
- 
     fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
 
     entrada <- struct{}{}
     espaciosEstacionamiento <- struct{}{}
+    time.Sleep(1 * time.Second)
     fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
 
     // Obtener una lista de coordenadas de estacionamiento no ocupadas
@@ -144,7 +144,9 @@ func vehicleLlega(vehicle *models.Vehicle) {
         vehicle.Position = coordenadasEstacionamiento[selectedCoordIndex]
         vehicle.Image.Move(vehicle.Position)
     } else {
-        fmt.Printf("No hay coordenadas de estacionamiento disponibles para el vehículo %d.\n", vehicle.ID)
+        // No hay coordenadas de estacionamiento disponibles
+        fmt.Printf("No hay coordenadas de estacionamiento disponibles para el vehículo %d. Esperando en la posición inicial.\n", vehicle.ID)
+        time.Sleep(time.Duration(1 + rand.Intn(20)) * time.Second) // Simula la espera
     }
 
     <-entrada
