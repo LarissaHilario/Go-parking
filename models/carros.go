@@ -22,6 +22,8 @@ var imags = []string{
     "./assets/carro_naranja.png",
     "./assets/carro_gris.png",
     "./assets/carro_verde.png",
+    "./assets/carrito.png",
+    "./assets/autobus.png",
 }
 
 type Vehicle struct {

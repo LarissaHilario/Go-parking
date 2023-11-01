@@ -20,8 +20,8 @@ type GameScene struct {
 }
 
 const (
-	capacidad    = 20
-	numVehiculos = 100
+	capacidad    = 5
+	numVehiculos = 20
 )
 
 var (
@@ -30,13 +30,35 @@ var (
 	wg                       sync.WaitGroup
 	vehicles                 = make([]*models.Vehicle, 0)
 	startVehicleCreation = make(chan bool) 
+    coordenadasEstacionamiento = []fyne.Position{
+        {X: 420, Y: 515},
+        {X: 656, Y: 515},
+        {X: 780, Y: 515},
+        {X: 900, Y: 515},
+        {X: 1021, Y: 515},
+        {X: 1140, Y: 515},
+        {X: 1260, Y: 515},
+        {X: 1380, Y: 515},
+        {X: 1500, Y: 515},
+        {X: 1615, Y: 515},
+        {X: 420, Y: 802},
+        {X: 656, Y: 802},
+        {X: 780, Y: 802},
+        {X: 900, Y: 802},
+        {X: 1021, Y: 802},
+        {X: 1140, Y: 802},
+        {X: 1260, Y: 802},
+        {X: 1380, Y: 802},
+        {X: 1500, Y: 802},
+        {X: 1615, Y: 802},
+    }   
 )
 
 func StartVehicleCreation() {
 	for _, vehicle := range vehicles {
         vehicle.Position = fyne.NewPos(100, 100)
     }
-    startVehicleCreation <- true // Envia una señal para iniciar la creación de vehículos
+    startVehicleCreation <- true
 }
 
 func NewGameScene(fyneWindow fyne.Window) *GameScene {
@@ -49,7 +71,7 @@ func NewGameScene(fyneWindow fyne.Window) *GameScene {
 
 func (s *GameScene) RenderGame() {
     background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background.png"))
-    background.Resize(fyne.NewSize(1050, 750))
+    background.Resize(fyne.NewSize(1920,1080))
     background.Move(fyne.NewPos(-5, 0))
 
     btnBackMenu := widget.NewButton("Salir", s.BackMenu)
@@ -67,11 +89,8 @@ func (s *GameScene) RenderGame() {
             wg.Add(1)
             vehicle := models.NewVehicle(i)
 
-            // Calcula la posición inicial en función del índice
-            x := 100 + float32(i*60) // Ajusta el espaciado entre vehículos
-            y := 350 // Ajusta la altura en la que aparecen los vehículos
+          
            
-            vehicle.Position = fyne.NewPos(x, float32(y))
             vehicles = append(vehicles, vehicle)
             go vehicleLlega(vehicle)
     
@@ -88,6 +107,7 @@ func (s *GameScene) BackMenu() {
 	NewMenuScene(s.window)
 	
 }
+
 func vehicleLlega(vehicle *models.Vehicle) {
     fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
     
@@ -102,8 +122,9 @@ func vehicleLlega(vehicle *models.Vehicle) {
         // Encuentra una nueva posición de estacionamiento
         for i := 0; i < len(vehicles)-1; i++ {
             if vehicles[i].Position == fyne.NewPos(100, 100) {
-                vehicles[i].Position = fyne.NewPos(float32(i*120), 150)
+                vehicles[i].Position = (coordenadasEstacionamiento[i])
                 vehicle.Image.Move(vehicles[i].Position)
+
                 break
             }
         }

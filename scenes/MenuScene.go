@@ -23,7 +23,7 @@ func NewMenuScene(fyneWindow fyne.Window) *MenuScene {
 
 func (s*MenuScene) RenderMenu() {
 	background := canvas.NewImageFromURI(storage.NewFileURI("./assets/background2.png"))
-	background.Resize(fyne.NewSize(1050,750))
+	background.Resize(fyne.NewSize(1920,1080))
 	background.Move(fyne.NewPos(-25,0))
 
 	btnStartGame := widget.NewButton("Iniciar", s.StartGame)
