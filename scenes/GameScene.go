@@ -20,8 +20,8 @@ type GameScene struct {
 }
 
 const (
-	capacidad    = 5
-	numVehiculos = 20
+	capacidad    = 20
+	numVehiculos = 100
 )
 
 var (
@@ -34,24 +34,24 @@ var (
         {X: 890, Y: 350},
         {X: 985, Y: 350},
         {X: 1086, Y: 350},
-        {X: 1190, Y: 350},
-        {X: 1300, Y: 350},
-        {X: 1390, Y: 350},
-        {X: 1500, Y: 350},
-        {X: 1590, Y: 350},
-        {X: 1680, Y: 350},
-        {X: 1780, Y: 350},
+        {X: 1185, Y: 350},
+        {X: 1278, Y: 350},
+        {X: 1370, Y: 350},
+        {X: 1470, Y: 350},
+        {X: 1565, Y: 350},
+        {X: 1658, Y: 350},
+        {X: 1755, Y: 350},
 
         {X: 890, Y: 650},
-        {X: 1031, Y: 650},
-        {X: 1127, Y: 650},
-        {X: 1221, Y: 650},
-        {X: 1310, Y: 650},
-        {X: 1402, Y: 650},
-        {X: 1510, Y: 650},
-        {X: 1600, Y: 650},
-        {X: 1692, Y: 650},
-        {X: 1790, Y: 650},
+        {X: 985, Y: 650},
+        {X: 1086, Y: 650},
+        {X: 1185, Y: 650},
+        {X: 1278, Y: 650},
+        {X: 1370, Y: 650},
+        {X: 1470, Y: 650},
+        {X: 1565, Y: 650},
+        {X: 1658, Y: 650},
+        {X: 1755, Y: 650},
 
 
        
@@ -113,40 +113,47 @@ func (s *GameScene) BackMenu() {
 }
 
 func vehicleLlega(vehicle *models.Vehicle) {
-    fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
-    
+ 
+	fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
 
-    entrada <- struct{}{}
+	entrada <- struct{}{}
 
-    espaciosEstacionamiento <- struct{}{}
-    fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
 
-    // Verifica si el slice tiene al menos dos elementos
-    if len(vehicles) >= 2 {
-        // Encuentra una nueva posición de estacionamiento
-        for i := 0; i < len(vehicles)-1; i++ {
-            if vehicles[i].Position == fyne.NewPos(100, 100) {
-                vehicles[i].Position = (coordenadasEstacionamiento[i])
-                vehicle.Image.Move(vehicles[i].Position)
+espaciosEstacionamiento <- struct{}{}
+fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
 
-                break
+if len(vehicles) >= 2 {
+    // Encuentra una nueva posición de estacionamiento aleatoria
+    for i := 0; i < len(coordenadasEstacionamiento); i++ {
+        if len(coordenadasEstacionamiento) > i {
+            // Verifica si la posición ya está ocupada
+            for j := 0; j < len(vehicles); j++ {
+                if vehicles[j].Position == coordenadasEstacionamiento[i] {
+                    // La posición ya está ocupada
+                    continue
+                }
             }
+
+            // Asigna la posición al vehículo
+            vehicles[i].Position = coordenadasEstacionamiento[i]
+            vehicle.Position= vehicles[i].Position
+            vehicle.Image.Move(coordenadasEstacionamiento[i])
+            break
         }
     }
+}
 
-    
-    
-    <-entrada
+<-entrada
 
-    fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
+fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
 
-    time.Sleep(time.Duration(1+rand.Intn(20)) * time.Second)
+time.Sleep(time.Duration(1+rand.Intn(20)) * time.Second)
 
-    <-espaciosEstacionamiento
-    fmt.Printf("El vehículo %d está saliendo del estacionamiento.\n", vehicle.ID)
+<-espaciosEstacionamiento
+fmt.Printf("El vehículo %d está saliendo del estacionamiento.\n", vehicle.ID)
 
-    // Libera la posición
-    vehicle.Position = fyne.NewPos(100, 400) // Regresa a la posición inicial
-    vehicle.Image.Move(vehicle.Position)
-    wg.Done()
+// Libera la posición
+vehicle.Position = fyne.NewPos(100, 700) // Regresa a la posición inicial
+vehicle.Image.Move(vehicle.Position)
+wg.Done()
 }

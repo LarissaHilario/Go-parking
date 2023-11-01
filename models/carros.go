@@ -43,6 +43,6 @@ func NewVehicle(id int ) *Vehicle {
         Position: fyne.NewPos(100,100), 
        
     }
-    Vehicle.Image.Resize(fyne.NewSize(100,100))
+    Vehicle.Image.Resize(fyne.NewSize(80,80))
     return Vehicle
 }
