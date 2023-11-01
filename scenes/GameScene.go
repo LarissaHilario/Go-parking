@@ -114,46 +114,50 @@ func (s *GameScene) BackMenu() {
 
 func vehicleLlega(vehicle *models.Vehicle) {
  
-	fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
+    fmt.Printf("El vehículo %d ha llegado.\n", vehicle.ID)
 
-	entrada <- struct{}{}
+    entrada <- struct{}{}
+    espaciosEstacionamiento <- struct{}{}
+    fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
 
-
-espaciosEstacionamiento <- struct{}{}
-fmt.Printf("El vehículo %d está entrando al estacionamiento.\n", vehicle.ID)
-
-if len(vehicles) >= 2 {
-    // Encuentra una nueva posición de estacionamiento aleatoria
-    for i := 0; i < len(coordenadasEstacionamiento); i++ {
-        if len(coordenadasEstacionamiento) > i {
-            // Verifica si la posición ya está ocupada
-            for j := 0; j < len(vehicles); j++ {
-                if vehicles[j].Position == coordenadasEstacionamiento[i] {
-                    // La posición ya está ocupada
-                    continue
-                }
+    // Obtener una lista de coordenadas de estacionamiento no ocupadas
+    coordenadasDisponibles := []int{}
+    for i, coordenada := range coordenadasEstacionamiento {
+        ocupada := false
+        for _, otroVehiculo := range vehicles {
+            if otroVehiculo.Position == coordenada {
+                ocupada = true
+                break
             }
-
-            // Asigna la posición al vehículo
-            vehicles[i].Position = coordenadasEstacionamiento[i]
-            vehicle.Position= vehicles[i].Position
-            vehicle.Image.Move(coordenadasEstacionamiento[i])
-            break
+        }
+        if !ocupada {
+            coordenadasDisponibles = append(coordenadasDisponibles, i)
         }
     }
-}
 
-<-entrada
+    if len(coordenadasDisponibles) > 0 {
+        // Elija una coordenada aleatoria de las disponibles
+        randomIndex := rand.Intn(len(coordenadasDisponibles))
+        selectedCoordIndex := coordenadasDisponibles[randomIndex]
 
-fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
+        // Asigne la posición al vehículo
+        vehicle.Position = coordenadasEstacionamiento[selectedCoordIndex]
+        vehicle.Image.Move(vehicle.Position)
+    } else {
+        fmt.Printf("No hay coordenadas de estacionamiento disponibles para el vehículo %d.\n", vehicle.ID)
+    }
 
-time.Sleep(time.Duration(1+rand.Intn(20)) * time.Second)
+    <-entrada
 
-<-espaciosEstacionamiento
-fmt.Printf("El vehículo %d está saliendo del estacionamiento.\n", vehicle.ID)
+    fmt.Printf("El vehículo %d está estacionado en la posición %v.\n", vehicle.ID, vehicle.Position)
 
-// Libera la posición
-vehicle.Position = fyne.NewPos(100, 700) // Regresa a la posición inicial
-vehicle.Image.Move(vehicle.Position)
-wg.Done()
+    time.Sleep(time.Duration(1 + rand.Intn(20)) * time.Second)
+
+    <-espaciosEstacionamiento
+    fmt.Printf("El vehículo %d está saliendo del estacionamiento.\n", vehicle.ID)
+
+    // Libera la posición
+    vehicle.Position = fyne.NewPos(100, 700) // Regresa a la posición inicial
+    vehicle.Image.Move(vehicle.Position)
+    wg.Done()
 }
