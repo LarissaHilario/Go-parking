@@ -10,7 +10,6 @@ func main() {
     myApp := app.New()
     myWindow := myApp.NewWindow("Estacionamiento")
 
-   
     myWindow.Resize(fyne.NewSize(1050, 750))
 	myWindow.CenterOnScreen()
 
